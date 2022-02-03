@@ -13,19 +13,19 @@ local templates = {
     key = "a",
     find_command = "find",
     find_args = ". -name ",
-    cursor_position = 13,
+    cursor_position = 8,
   },
   ["find files"] = {
     key = "f",
     find_command = "find",
     find_args = ". -name  -type f",
-    cursor_position = 13,
+    cursor_position = 8,
   },
   ["find directories"] = {
     key = "d",
     find_command = "find",
     find_args = ". -name  -type d",
-    cursor_position = 13,
+    cursor_position = 8,
   },
 }
 
