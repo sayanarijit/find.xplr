@@ -45,21 +45,23 @@ An interactive finder plugin to complement [map.xplr](https://github.com/sayanar
     templates = {
       ["find all"] = {
         key = "a",
-        find_command = "find . -name ",
+        find_command = "find",
+        find_args = ". -name ",
         cursor_position = 13,
       },
       ["find files"] = {
         key = "f",
-        find_command = "find . -name  -type f",
+        find_command = "find",
+        find_args = ". -name  -type f",
         cursor_position = 13,
       },
       ["find directories"] = {
         key = "d",
-        find_command = "find . -name  -type d",
+        find_command = "find",
+        find_args = ". -name  -type d",
         cursor_position = 13,
       },
-    }
-
+    },
     refresh_screen_key = "ctrl-r",
   }
 

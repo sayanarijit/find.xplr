@@ -5,20 +5,26 @@ local xplr = xplr
 local result = {}
 local errors = {}
 
+local find_command = "find"
+local find_args = ""
+
 local templates = {
   ["find all"] = {
     key = "a",
-    find_command = "find . -name ",
+    find_command = "find",
+    find_args = ". -name ",
     cursor_position = 13,
   },
   ["find files"] = {
     key = "f",
-    find_command = "find . -name  -type f",
+    find_command = "find",
+    find_args = ". -name  -type f",
     cursor_position = 13,
   },
   ["find directories"] = {
     key = "d",
-    find_command = "find . -name  -type d",
+    find_command = "find",
+    find_args = ". -name  -type d",
     cursor_position = 13,
   },
 }
@@ -89,6 +95,8 @@ local function setup(args)
       messages = {
         "PopMode",
         { SetInputBuffer = t.find_command },
+        { CallLuaSilently = "custom.find.capture_find_command" },
+        { BufferInput = t.find_args },
         { UpdateInputBuffer = { SetCursor = t.cursor_position } },
         { CallLuaSilently = "custom.find.exec_command" },
         { SwitchModeCustomKeepingInputBuffer = mode_name },
@@ -173,8 +181,19 @@ local function setup(args)
     return msgs
   end
 
+  xplr.fn.custom.find.capture_find_command = function(app)
+    find_command = app.input_buffer or find_command
+    find_args = ""
+
+    return {
+      { SetInputBuffer = "" },
+    }
+  end
+
   xplr.fn.custom.find.exec_command = function(app)
-    local cmd = app.input_buffer or ""
+    find_args = app.input_buffer or find_args
+
+    local cmd = find_command .. " " .. find_args
     local result_file, errors_file = os.tmpname(), os.tmpname()
     local ret = os.execute(cmd .. " > " .. result_file .. " 2> " .. errors_file)
 
@@ -191,7 +210,7 @@ local function setup(args)
   end
 
   xplr.fn.custom.find.render = function(ctx)
-    local cmd = ctx.app.input_buffer or ""
+    local cmd = find_command .. " " .. find_args
 
     local ui = { " " }
     if #errors ~= 0 then
