@@ -1,13 +1,13 @@
-# xplr plugin template
+[![find-xplr.gif](https://s10.gifyu.com/images/find-xplr.gif)](https://gifyu.com/image/Szb6a)
 
-Use this template to [write your own xplr plugin](https://arijitbasu.in/xplr/en/writing-plugins.html).
+An interactive finder plugin to complement [map.xplr](https://github.com/sayanarijit/map.xplr).
 
-> **NOTE:** The `src` directory is a symlink to `.` for compatibility reasons.
-> It may be removed in the future.
+> **WARNING:** This plugin will execute the find command during each input. So
+> only use read-only commands.
 
 ## Requirements
 
-- Some tool
+`find` or `fd` or any finder of your choice. By default it uses `find`.
 
 ## Installation
 
@@ -29,24 +29,60 @@ Use this template to [write your own xplr plugin](https://arijitbasu.in/xplr/en/
   ```bash
   mkdir -p ~/.config/xplr/plugins
 
-  git clone https://github.com/{username}/{plugin}.xplr ~/.config/xplr/plugins/{plugin}
+  git clone https://github.com/sayanarijit/find.xplr ~/.config/xplr/plugins/find
   ```
 
 - Require the module in `~/.config/xplr/init.lua`
 
   ```lua
-  require("{plugin}").setup()
+  require("find").setup()
 
   -- Or
 
-  require("{plugin}").setup{
-    mode = "action",
-    key = ":",
+  require("find").setup{
+    mode = "default",
+    key = "F",
+    templates = {
+      ["find all"] = {
+        key = "a",
+        find_command = "find . -name ",
+        cursor_position = 13,
+      },
+      ["find files"] = {
+        key = "f",
+        find_command = "find . -name  -type f",
+        cursor_position = 13,
+      },
+      ["find directories"] = {
+        key = "d",
+        find_command = "find . -name  -type d",
+        cursor_position = 13,
+      },
+    }
+
+    refresh_screen_key = "ctrl-r",
   }
 
-  -- Type `::` and enjoy.
+  -- Press `F` to find files interactively using the `find_command`.
   ```
+
+## Find-Map workflow
+
+This library complements [map.xplr](https://github.com/sayanarijit/map.xplr) to
+create a powerful workflow in which you first **find a set of files
+interactively**, and then **map them to some command, also interactively**.
 
 ## Features
 
-- Some cool feature
+- Set the initial cursor position for complex find command templates.
+- Use custom find command templates.
+- Refresh screen with `ctrl-r`.
+
+## TODO
+
+- [ ] Ignore errors
+- [ ] Improve performance
+- [ ] Add timeout
+- [ ] Allow pipes
+- [ ] Templates for most common find command arguments
+- [ ] More convenient integration with map.xplr
