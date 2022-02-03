@@ -80,6 +80,12 @@ local function setup(args)
             "Terminate",
           },
         },
+
+        -- disable dangerous keys
+        [">"] = { messages = {} },
+        ["<"] = { messages = {} },
+        ["|"] = { messages = {} },
+        ["`"] = { messages = {} },
       },
     },
   }
@@ -148,6 +154,12 @@ local function setup(args)
               "Terminate",
             },
           },
+
+          -- disable dangerous keys
+          [">"] = { messages = {} },
+          ["<"] = { messages = {} },
+          ["|"] = { messages = {} },
+          ["`"] = { messages = {} },
         },
         default = {
           messages = {
