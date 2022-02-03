@@ -203,7 +203,11 @@ local function setup(args)
   end
 
   xplr.fn.custom.find.exec_command = function(app)
-    find_args = app.input_buffer or find_args
+    if not app.input_buffer or app.input_buffer == find_args then
+      return
+    end
+
+    find_args = app.input_buffer
 
     local cmd = find_command .. " " .. find_args
     local result_file, errors_file = os.tmpname(), os.tmpname()
