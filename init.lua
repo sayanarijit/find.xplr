@@ -82,6 +82,7 @@ local function setup(args)
         },
 
         -- disable dangerous keys
+        ["&"] = { messages = {} },
         [">"] = { messages = {} },
         ["<"] = { messages = {} },
         ["|"] = { messages = {} },
@@ -102,7 +103,7 @@ local function setup(args)
         "PopMode",
         { SetInputBuffer = t.find_command },
         { CallLuaSilently = "custom.find.capture_find_command" },
-        { BufferInput = t.find_args },
+        { SetInputBuffer = t.find_args },
         { UpdateInputBuffer = { SetCursor = t.cursor_position } },
         { CallLuaSilently = "custom.find.exec_command" },
         { SwitchModeCustomKeepingInputBuffer = mode_name },
@@ -197,6 +198,7 @@ local function setup(args)
 
     return {
       { SetInputBuffer = "" },
+      { SetInputPrompt = "!" .. find_command .. " " },
     }
   end
 
@@ -235,10 +237,7 @@ local function setup(args)
         table.insert(ui, "  " .. err)
       end
     else
-      table.insert(
-        ui,
-        tostring(#result) .. " result found for `" .. cmd .. "` ..."
-      )
+      table.insert(ui, tostring(#result) .. " result found for `" .. cmd .. "` ...")
       table.insert(ui, " ")
 
       for i1, file in ipairs(result) do
