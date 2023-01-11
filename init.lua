@@ -29,6 +29,14 @@ local templates = {
   },
 }
 
+local function splitlines(str)
+  local lines = {}
+  for line in str:gmatch("[^\r\n]+") do
+    table.insert(lines, line)
+  end
+  return lines
+end
+
 local function parse_args(args)
   args = args or {}
   args.mode = args.mode or "default"
@@ -45,21 +53,6 @@ local layout = {
     body = { DynamicList = { render = "custom.find.render" } },
   },
 }
-
-local function read_file(path)
-  local file = io.open(path, "rb") -- r read mode and b binary mode
-  if not file then
-    return {}
-  end
-  local content = file:read("*a") -- *a or *all reads the whole file
-  file:close()
-
-  local lines = {}
-  for s in content:gmatch("[^\r\n]+") do
-    table.insert(lines, s)
-  end
-  return lines
-end
 
 local function setup(args)
   args = parse_args(args)
@@ -210,19 +203,15 @@ local function setup(args)
     find_args = app.input_buffer
 
     local cmd = find_command .. " " .. find_args
-    local result_file, errors_file = os.tmpname(), os.tmpname()
-    local ret = os.execute(cmd .. " > " .. result_file .. " 2> " .. errors_file)
+    local res = xplr.util.shell_execute("bash", { "-c", cmd })
 
-    if ret == 0 then
-      result = read_file(result_file)
+    if res.returncode == 0 then
+      result = splitlines(res.stdout)
       errors = {}
     else
       result = {}
-      errors = read_file(errors_file)
+      errors = splitlines(res.stderr)
     end
-
-    os.remove(result_file)
-    os.remove(errors_file)
   end
 
   xplr.fn.custom.find.render = function(ctx)
